@@ -1,0 +1,126 @@
+📌 Prompt Completo — Projeto Prático Front-End (SPA)
+
+Olá! Preciso que você desenvolva um projeto completo com base nas especificações abaixo. Este é um teste prático de vaga de Desenvolvedor Júnior/Pleno, e a entrega deve estar totalmente funcional, organizada e documentada.
+
+🎯 Objetivo
+
+Criar uma Single Page Application (SPA) em JavaScript ou TypeScript, consumindo a API pública de pessoas desaparecidas da Polícia Judiciária Civil de Mato Grosso.
+
+Swagger da API: https://abitus-api.geia.vip/swagger-ui/index.html
+
+⚙️ Funcionalidades Principais
+1. Tela Inicial
+
+Exibir cards com foto e dados principais das pessoas cadastradas (nome, idade, status).
+
+Status pode ser: "Desaparecida" ou "Localizada" (com destaque visual diferente).
+
+Implementar paginação (mínimo 10 registros por página).
+
+Disponibilizar campo de busca (parâmetros suportados pela API).
+
+2. Página de Detalhes
+
+Ao clicar em um card, abrir uma página de detalhes com todas as informações da pessoa.
+
+Destacar visualmente se está desaparecida ou localizada.
+
+3. Envio de Informações
+
+Na página de detalhes, incluir botão para o cidadão enviar novas informações.
+
+O formulário deve permitir:
+
+Observações (campo de texto).
+
+Localização avistada (campo de endereço ou coordenadas).
+
+Upload de fotos.
+
+Aplicar máscaras de entrada em campos necessários (ex.: telefone, data).
+
+📐 Requisitos Técnicos
+
+Framework: React (preferencialmente com Vite ou Next.js, mas pode ser CRA).
+
+Linguagem: JavaScript ou TypeScript (preferencial TypeScript).
+
+Estilização: Tailwind CSS (responsivo para desktop, tablet e mobile).
+
+Rotas: React Router com Lazy Loading.
+
+Consumo de API: fetch ou axios.
+
+Tratamento de Erros: mensagens claras de falha ao buscar dados, enviar formulários, etc.
+
+Arquitetura: Componentes reutilizáveis e bem organizados.
+
+Design: simples, intuitivo e limpo (UI amigável).
+
+🐳 Docker
+
+Criar Dockerfile para empacotar a aplicação.
+
+Configurar para rodar em um container com todas as dependências necessárias.
+
+Instruções no README para rodar com docker build e docker run.
+
+📂 Estrutura Esperada
+
+Sugestão (pode adaptar, mas deve estar bem organizado):
+
+/src
+  /components
+  /pages
+  /services (requisições à API)
+  /assets (imagens, ícones)
+  /styles
+  main.tsx / index.tsx
+Dockerfile
+README.md
+package.json
+
+📦 Entrega
+
+Código hospedado em repositório público no GitHub.
+
+README.md deve conter:
+
+Seus dados de inscrição (nome, contato).
+
+Passo a passo para instalação, execução e testes (com e sem Docker).
+
+Todos os arquivos versionados (código, scripts, Dockerfile etc.).
+
+Sem commits após o prazo de entrega.
+
+✅ O que será avaliado
+
+Organização e clareza do código.
+
+Correto consumo da API em tempo real.
+
+Uso adequado de componentes e boas práticas de React.
+
+Layout responsivo (desktop, tablet, mobile).
+
+Implementação correta de paginação, busca e formulários.
+
+Uso de Docker para containerização.
+
+Tratamento de erros.
+
+Clareza do README.md.
+
+🔑 Extras (não obrigatórios, mas valorizados)
+
+Uso de Context API ou Redux para gerenciamento de estado.
+
+Testes unitários com Jest ou Testing Library.
+
+Deploy (Vercel, Netlify ou Docker em algum servidor).
+
+📌 Resumindo
+
+Quero que você desenvolva todo o projeto do zero até a entrega final, atendendo a todos os pontos acima.
+Sempre que houver dúvida de implementação, opte por boas práticas de mercado.
