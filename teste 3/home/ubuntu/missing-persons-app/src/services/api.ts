@@ -3,7 +3,7 @@ import type { Person, PersonResponse, PersonSearchParams, InformationSubmission 
 import { mockPersons, createMockResponse } from './mockData';
 
 const API_BASE_URL = 'https://abitus-api.geia.vip';
-const USE_MOCK_DATA = true; // Altere para false quando a API estiver funcionando
+const USE_MOCK_DATA = false; // Altere para false quando a API estiver funcionando
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -54,7 +54,8 @@ export const personService = {
     }
 
     try {
-      const response = await api.get('/api/v1/person', { params });
+      // Para listar pessoas
+      const response = await api.get('/v1/pessoas/aberto/filtro', { params });
       
       // Validação básica da resposta
       if (!response.data || !Array.isArray(response.data.content)) {
@@ -90,7 +91,8 @@ export const personService = {
         throw new Error('ID da pessoa é obrigatório');
       }
       
-      const response = await api.get(`/api/v1/person/${encodeURIComponent(id)}`);
+      // Para detalhes
+      const response = await api.get(`/v1/pessoas/${encodeURIComponent(id)}`);
       
       if (!response.data) {
         throw new Error('Dados da pessoa não encontrados');
