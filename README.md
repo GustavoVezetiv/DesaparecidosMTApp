@@ -1,4 +1,4 @@
-# Sistema de Pessoas Desaparecidas - SPA
+# Sistema de Pessoas Desaparecidas - SPA - NÃO FINALIZADO
 
 Uma Single Page Application (SPA) desenvolvida em React com TypeScript para consulta e envio de informações sobre pessoas desaparecidas, consumindo a API da Polícia Judiciária Civil de Mato Grosso.
 
@@ -218,7 +218,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👥 Autor
 
-**Desenvolvedor**: [gustavo]
 **Contato**: [gustavovezetiv8@gmail.com]
 **LinkedIn**: [[seu-linkedin](https://www.linkedin.com/in/gustavo-vezetiv-08416126b/)]
 
