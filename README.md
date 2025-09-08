@@ -218,9 +218,9 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👥 Autor
 
-**Desenvolvedor**: [Seu Nome]
-**Contato**: [seu.email@exemplo.com]
-**LinkedIn**: [seu-linkedin]
+**Desenvolvedor**: [gustavo]
+**Contato**: [gustavovezetiv8@gmail.com]
+**LinkedIn**: [[seu-linkedin](https://www.linkedin.com/in/gustavo-vezetiv-08416126b/)]
 
 ---
 
