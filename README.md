@@ -219,7 +219,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ## 👥 Autor
 
 **Contato**: [gustavovezetiv8@gmail.com]
-**LinkedIn**: [[seu-linkedin](https://www.linkedin.com/in/gustavo-vezetiv-08416126b/)]
+**LinkedIn**: [Linkedin](https://www.linkedin.com/in/gustavo-vezetiv-08416126b/)]
 
 ---
 
