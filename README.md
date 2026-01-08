@@ -1,4 +1,4 @@
-# Sistema de Pessoas Desaparecidas - SPA - NÃO FINALIZADO
+# Sistema de Pessoas Desaparecidas - SPA - EM DESENVOLVIMENTO - (MVP)
 
 Uma Single Page Application (SPA) desenvolvida em React com TypeScript para consulta e envio de informações sobre pessoas desaparecidas, consumindo a API da Polícia Judiciária Civil de Mato Grosso.
 
