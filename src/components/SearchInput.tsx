@@ -5,9 +5,10 @@ interface SearchInputProps {
   placeholder?: string;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ 
-  onSearch, 
-  placeholder = "Buscar por nome..." 
+// Input de busca com estilo moderno
+const SearchInput: React.FC<SearchInputProps> = ({
+  onSearch,
+  placeholder = "Buscar por nome..."
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -22,59 +23,78 @@ const SearchInput: React.FC<SearchInputProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md">
+    <form onSubmit={handleSubmit} className="flex-1 max-w-lg">
       <div className="relative">
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-4 py-2 pl-10 pr-10 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="input-styled"
         />
-        
-        {/* Ícone de busca */}
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg 
-            className="w-5 h-5 text-gray-400" 
-            fill="none" 
-            stroke="currentColor" 
+
+        {/* Icone de busca */}
+        <div className="absolute inset-y-0 left-0 flex items-center pl-4">
+          <svg
+            className="w-5 h-5 text-slate-400"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
         </div>
 
-        {/* Botão de limpar */}
+        {/* Botao de limpar quando tem texto */}
         {searchTerm && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute inset-y-0 right-0 flex items-center pr-3"
+            className="absolute inset-y-0 right-12 flex items-center px-2 text-slate-400 hover:text-slate-600 transition-colors"
           >
-            <svg 
-              className="w-5 h-5 text-gray-400 hover:text-gray-600" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M6 18L18 6M6 6l12 12" 
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
               />
             </svg>
           </button>
         )}
+
+        {/* Botao de buscar */}
+        <button
+          type="submit"
+          className="absolute inset-y-0 right-0 flex items-center px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-r-xl transition-colors"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            />
+          </svg>
+        </button>
       </div>
     </form>
   );
 };
 
 export default SearchInput;
-

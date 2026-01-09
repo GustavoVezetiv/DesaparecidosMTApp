@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { personService } from '../services/api';
 import type { Person, PersonSearchParams } from '../types/Person';
@@ -8,6 +8,7 @@ import Pagination from '../components/Pagination';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 
+// Pagina principal com listagem de pessoas desaparecidas
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [persons, setPersons] = useState<Person[]>([]);
@@ -15,26 +16,29 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
 
-  const pageSize = 10;
+  const pageSize = 12;
 
-  const fetchPersons = async (params: PersonSearchParams = {}) => {
+  const fetchPersons = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
+      // Monta os parametros conforme a API espera
       const searchParams: PersonSearchParams = {
-        page: currentPage - 1, // API usa base 0
+        page: currentPage - 1, // API comeca em 0
         size: pageSize,
-        ...params
       };
 
-      if (searchTerm) {
-        searchParams.name = searchTerm;
+      // Adiciona filtro de nome se tiver
+      if (searchTerm.trim()) {
+        searchParams.nome = searchTerm.trim();
       }
 
+      // Adiciona filtro de status se tiver
       if (statusFilter) {
         searchParams.status = statusFilter;
       }
@@ -42,26 +46,27 @@ const HomePage: React.FC = () => {
       const response = await personService.getPersons(searchParams);
       setPersons(response.content);
       setTotalPages(response.totalPages);
+      setTotalElements(response.totalElements);
     } catch (err) {
-      setError('Erro ao carregar a lista de pessoas desaparecidas. Tente novamente.');
-      console.error('Erro ao buscar pessoas:', err);
+      setError('Não foi possível carregar os dados. Tente novamente.');
+      console.error('Erro:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, statusFilter, pageSize]);
 
   useEffect(() => {
     fetchPersons();
-  }, [currentPage, searchTerm, statusFilter]);
+  }, [fetchPersons]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    setCurrentPage(1); // Reset para primeira página ao buscar
+    setCurrentPage(1); // Volta pra primeira pagina
   };
 
   const handleStatusFilter = (status: string) => {
     setStatusFilter(status);
-    setCurrentPage(1); // Reset para primeira página ao filtrar
+    setCurrentPage(1); // Volta pra primeira pagina
   };
 
   const handlePersonClick = (id: string) => {
@@ -70,6 +75,7 @@ const HomePage: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleRetry = () => {
@@ -77,75 +83,105 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}>
+      {/* Header estilizado */}
+      <header className="header-gradient text-white py-8 md:py-12 relative">
+        <div className="container-app relative z-10">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-4 backdrop-blur-sm">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 tracking-tight">
               Pessoas Desaparecidas
             </h1>
-            <p className="text-gray-600">
-              Sistema de busca e informações sobre pessoas desaparecidas
+            <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto">
+              Sistema de busca e informações sobre pessoas desaparecidas no Mato Grosso
             </p>
+
+            {/* Stats rapidos */}
+            {!loading && !error && (
+              <div className="flex justify-center gap-8 mt-6">
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold">{totalElements.toLocaleString()}</div>
+                  <div className="text-sm text-blue-200">Registros</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold">{totalPages}</div>
+                  <div className="text-sm text-blue-200">Páginas</div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Filtros e Busca */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <SearchInput 
+      {/* Area de busca e filtros */}
+      <div className="container-app -mt-6 relative z-20">
+        <div className="glass-card rounded-2xl p-6 shadow-glow">
+          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+            <SearchInput
               onSearch={handleSearch}
-              placeholder="Buscar por nome..."
+              placeholder="Digite o nome para buscar..."
             />
-            
-            <div className="flex gap-2">
-              <select
-                value={statusFilter}
-                onChange={(e) => handleStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todos os status</option>
-                <option value="Desaparecida">Desaparecida</option>
-                <option value="Localizada">Localizada</option>
-              </select>
-            </div>
+
+            <select
+              value={statusFilter}
+              onChange={(e) => handleStatusFilter(e.target.value)}
+              className="select-styled min-w-[180px]"
+            >
+              <option value="">Todos os status</option>
+              <option value="DESAPARECIDO">Desaparecidos</option>
+              <option value="LOCALIZADO">Localizados</option>
+            </select>
           </div>
         </div>
+      </div>
 
-        {/* Conteúdo Principal */}
+      {/* Conteudo principal */}
+      <div className="container-app py-8">
         {loading ? (
-          <LoadingSpinner text="Carregando pessoas..." />
+          <div className="flex justify-center py-20">
+            <LoadingSpinner text="Buscando registros..." />
+          </div>
         ) : error ? (
-          <ErrorMessage message={error} onRetry={handleRetry} />
+          <div className="max-w-md mx-auto">
+            <ErrorMessage message={error} onRetry={handleRetry} />
+          </div>
         ) : (
           <>
-            {/* Resultados */}
-            <div className="mb-6">
-              <p className="text-gray-600">
-                {persons.length > 0 
-                  ? `Mostrando ${persons.length} resultado(s)`
-                  : 'Nenhuma pessoa encontrada'
+            {/* Info de resultados */}
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-slate-300">
+                {persons.length > 0
+                  ? `Mostrando ${persons.length} de ${totalElements.toLocaleString()} registros`
+                  : 'Nenhum resultado encontrado'
                 }
+              </p>
+              <p className="text-slate-400 text-sm">
+                Página {currentPage} de {totalPages}
               </p>
             </div>
 
-            {/* Grid de Cards */}
+            {/* Grid de cards */}
             {persons.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-                  {persons.map((person) => (
-                    <PersonCard
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
+                  {persons.map((person, index) => (
+                    <div
                       key={person.id}
-                      person={person}
-                      onClick={handlePersonClick}
-                    />
+                      style={{ animationDelay: `${index * 50}ms` }}
+                      className="animate-fadeIn"
+                    >
+                      <PersonCard
+                        person={person}
+                        onClick={handlePersonClick}
+                      />
+                    </div>
                   ))}
                 </div>
 
-                {/* Paginação */}
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
@@ -153,34 +189,42 @@ const HomePage: React.FC = () => {
                 />
               </>
             ) : (
-              <div className="text-center py-12">
-                <svg 
-                  className="mx-auto h-12 w-12 text-gray-400 mb-4" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
-                  />
-                </svg>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Nenhuma pessoa encontrada
+              <div className="text-center py-16">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-full mb-6">
+                  <svg
+                    className="w-10 h-10 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  Nenhum resultado encontrado
                 </h3>
-                <p className="text-gray-500">
-                  Tente ajustar os filtros de busca ou remover alguns termos.
+                <p className="text-slate-400 max-w-md mx-auto">
+                  Tente mudar os termos da busca ou remover alguns filtros.
                 </p>
               </div>
             )}
           </>
         )}
       </div>
+
+      {/* Footer simples */}
+      <footer className="border-t border-slate-800 py-6">
+        <div className="container-app text-center text-slate-500 text-sm">
+          <p>Sistema de Pessoas Desaparecidas - Mato Grosso</p>
+        </div>
+      </footer>
     </div>
   );
 };
 
 export default HomePage;
-

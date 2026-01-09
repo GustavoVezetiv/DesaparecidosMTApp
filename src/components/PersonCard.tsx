@@ -6,56 +6,114 @@ interface PersonCardProps {
   onClick: (id: string) => void;
 }
 
+// Componente de card para exibir resumo da pessoa
 const PersonCard: React.FC<PersonCardProps> = ({ person, onClick }) => {
-  const statusColor = person.status === 'Desaparecida' 
-    ? 'bg-red-100 text-red-800 border-red-200' 
-    : 'bg-green-100 text-green-800 border-green-200';
+  const isDesaparecida = !person.ultimaOcorrencia?.dataLocalizacao;
+
+  const formatarData = (dataString?: string) => {
+    if (!dataString) return 'Não informado';
+    try {
+      return new Date(dataString).toLocaleDateString('pt-BR');
+    } catch {
+      return dataString;
+    }
+  };
 
   return (
-    <div 
-      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer border border-gray-200"
-      onClick={() => onClick(person.id)}
+    <div
+      className="person-card cursor-pointer animate-fadeIn"
+      onClick={() => onClick(String(person.id))}
     >
-      <div className="p-4">
-        {person.foto && (
-          <div className="mb-4">
-            <img 
-              src={person.foto} 
-              alt={`Foto de ${person.nome}`}
-              className="w-full h-48 object-cover rounded-md"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = 'https://via.placeholder.com/300x200?text=Sem+Foto';
-              }}
+      {/* Imagem da pessoa */}
+      <div className="relative overflow-hidden h-52 bg-gradient-to-br from-slate-100 to-slate-200">
+        {person.urlFoto ? (
+          <img
+            src={person.urlFoto}
+            alt={`Foto de ${person.nome}`}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              target.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        ) : null}
+        <div className={`${person.urlFoto ? 'hidden' : ''} absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300`}>
+          <svg
+            className="w-20 h-20 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
             />
-          </div>
-        )}
-        
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-900 truncate">
-            {person.nome}
-          </h3>
-          
-          <p className="text-sm text-gray-600">
-            Idade: {person.idade} anos
-          </p>
-          
-          <div className="flex justify-between items-center">
-            <span 
-              className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${statusColor}`}
-            >
-              {person.status}
-            </span>
-            
-            <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-              Ver detalhes →
-            </button>
-          </div>
+          </svg>
         </div>
+
+        {/* Status badge */}
+        <div className="absolute top-3 right-3">
+          <span
+            className={`inline-flex px-3 py-1.5 text-xs font-bold rounded-full shadow-lg ${isDesaparecida
+                ? 'status-missing'
+                : 'status-found'
+              }`}
+          >
+            {isDesaparecida ? '🔴 Desaparecido(a)' : '🟢 Localizado(a)'}
+          </span>
+        </div>
+      </div>
+
+      {/* Informacoes */}
+      <div className="p-5">
+        <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-2">
+          {person.nome}
+        </h3>
+
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center text-sm text-slate-600">
+            <svg className="w-4 h-4 mr-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>{person.idade > 0 ? `${person.idade} anos` : 'Idade não informada'}</span>
+          </div>
+
+          <div className="flex items-center text-sm text-slate-600">
+            <svg className="w-4 h-4 mr-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>{formatarData(person.ultimaOcorrencia?.dtDesaparecimento)}</span>
+          </div>
+
+          {person.ultimaOcorrencia?.localDesaparecimentoConcat && (
+            <div className="flex items-start text-sm text-slate-600">
+              <svg className="w-4 h-4 mr-2 mt-0.5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span className="line-clamp-2">{person.ultimaOcorrencia.localDesaparecimentoConcat}</span>
+            </div>
+          )}
+        </div>
+
+        <button
+          className="w-full btn-primary text-sm py-2.5 flex items-center justify-center gap-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick(String(person.id));
+          }}
+        >
+          Ver detalhes
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </div>
   );
 };
 
 export default PersonCard;
-

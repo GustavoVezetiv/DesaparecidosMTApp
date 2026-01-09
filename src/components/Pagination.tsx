@@ -6,10 +6,11 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ 
-  currentPage, 
-  totalPages, 
-  onPageChange 
+// Componente de paginacao estilizado
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange
 }) => {
   const getVisiblePages = () => {
     const delta = 2;
@@ -34,7 +35,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
     if (currentPage + delta < totalPages - 1) {
       rangeWithDots.push('...', totalPages);
-    } else {
+    } else if (totalPages > 1) {
       rangeWithDots.push(totalPages);
     }
 
@@ -44,49 +45,55 @@ const Pagination: React.FC<PaginationProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center space-x-2 mt-8">
-      {/* Botão Anterior */}
+    <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
+      {/* Botao Anterior */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-4 py-2.5 text-sm font-semibold text-slate-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2"
       >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
         Anterior
       </button>
 
-      {/* Números das páginas */}
-      {getVisiblePages().map((page, index) => (
-        <React.Fragment key={index}>
-          {page === '...' ? (
-            <span className="px-3 py-2 text-sm font-medium text-gray-500">
-              ...
-            </span>
-          ) : (
-            <button
-              onClick={() => onPageChange(page as number)}
-              className={`px-3 py-2 text-sm font-medium rounded-md ${
-                currentPage === page
-                  ? 'text-white bg-blue-600 border border-blue-600'
-                  : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {page}
-            </button>
-          )}
-        </React.Fragment>
-      ))}
+      {/* Numeros das paginas */}
+      <div className="flex items-center gap-1">
+        {getVisiblePages().map((page, index) => (
+          <React.Fragment key={index}>
+            {page === '...' ? (
+              <span className="px-3 py-2 text-sm font-medium text-slate-500">
+                •••
+              </span>
+            ) : (
+              <button
+                onClick={() => onPageChange(page as number)}
+                className={`w-10 h-10 text-sm font-semibold rounded-xl transition-all ${currentPage === page
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                    : 'text-slate-300 bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:text-white'
+                  }`}
+              >
+                {page}
+              </button>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
 
-      {/* Botão Próximo */}
+      {/* Botao Proximo */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-4 py-2.5 text-sm font-semibold text-slate-300 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2"
       >
         Próximo
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
       </button>
     </div>
   );
 };
 
 export default Pagination;
-

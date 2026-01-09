@@ -1,20 +1,34 @@
+// Tipagem baseada na resposta real da API
+
+export interface UltimaOcorrencia {
+  dtDesaparecimento: string;
+  dataLocalizacao: string | null;
+  encontradoVivo: boolean;
+  localDesaparecimentoConcat: string;
+  ocorrenciaEntrevDesapDTO: {
+    informacao: string | null;
+    vestimentasDesaparecido: string | null;
+  } | null;
+  listaCartaz: string[] | null;
+  ocoId: number;
+}
+
 export interface Person {
-  id: string;
+  id: number;
   nome: string;
   idade: number;
-  status: 'Desaparecida' | 'Localizada';
-  foto?: string;
-  descricao?: string;
-  dataDesaparecimento?: string;
-  localDesaparecimento?: string;
-  telefoneContato?: string;
-  observacoes?: string;
+  idadeQuandoDesapareceu: number;
+  sexo: string;
+  vivo: boolean;
+  possuiDnaColetado: boolean;
+  urlFoto: string | null;
+  ultimaOcorrencia: UltimaOcorrencia;
 }
 
 export interface PersonSearchParams {
   page?: number;
   size?: number;
-  name?: string;
+  nome?: string;
   status?: string;
 }
 
@@ -24,6 +38,9 @@ export interface PersonResponse {
   totalPages: number;
   size: number;
   number: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
 }
 
 export interface InformationSubmission {
@@ -32,4 +49,3 @@ export interface InformationSubmission {
   localizacao: string;
   fotos?: File[];
 }
-
